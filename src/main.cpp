@@ -107,6 +107,9 @@ void ZoomApp::updateViewAfterResize() {
         // NOTE: these static casts are for stopping the implicit conversion warnings
         int newX{(static_cast<int>(windowSize.x) / 2) - (static_cast<int>(mWorldSize.x) / 2)};
         newPosition.x = static_cast<float>(newX) / windowSize.x;  // convert back to a float in range [0, 1]
+        
+        // the width of size should just be the world space width
+        newSize.x = static_cast<float>(mWorldSize.x) / windowSize.x;
     } 
     // Case 2: world ratio > window ratio -> we want black bars on top and bottom
     else if (worldAspectRatio > windowAspectRatio) {
