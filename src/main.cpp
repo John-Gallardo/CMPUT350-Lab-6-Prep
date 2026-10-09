@@ -115,9 +115,11 @@ void ZoomApp::updateZoomView(sf::Vector2i mousePos) {
 void ZoomApp::render() {
     mWindow.clear(sf::Color::Black);
     if (!mIsZooming) {
-        // TODO: If the user is not zooming in, use the default world view.
+        // If the user is not zooming in, use the default world view.
+        mWindow.setView(mWorldViewDefault);
     } else {
         // TODO: If the user is zooming in, use the zoomed world view.
+        mWindow.setView(mWorldViewZoomed);
     }
     mWindow.draw(*mWaldoSprite);
     mWindow.display();
