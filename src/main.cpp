@@ -76,7 +76,7 @@ void ZoomApp::handleEvent(const sf::Event& event) {
 // world when unzoomed.
 void ZoomApp::updateViewAfterResize() {
     // ====== ====== ======
-    // TODO:
+    // 
     //      Enforce original aspect ratio of mWorldSize in the viewports of
     //      mWorldViewDefault and mWorldViewZoomed, when window resizes.
     //      The world view should be expanded/shrinked uniformly to fit in and be centered in the
@@ -91,6 +91,33 @@ void ZoomApp::updateViewAfterResize() {
     // Calculate newViewport based on aspect ratios of window and of mWorldSize. Then:
     // mWorldViewDefault.setViewport(newViewport);
     // mWorldViewZoomed.setViewport(newViewport);
+    
+    // 1. calculate aspect ratios
+    sf::Vector2u windowSize{mWindow.getSize()};
+    float windowAspectRatio{static_cast<float>(windowSize.x) / static_cast<float>(windowSize.y)};
+    float worldAspectRatio{mWorldSize.x / mWorldSize.y};
+
+    // 2. aspect ratio comparison
+    sf::Vector2f newPosition{0.0f, 0.0f};  // default case -> same ratio so top left corner is (0, 0)
+    sf::Vector2f newSize{1.0f, 1.0f};      // default case -> cover entire screen
+    
+    // Case 1: world ratio < window ratio -> we want black bars on left and right (like in prep example)
+    if (worldAspectRatio < windowAspectRatio) {
+        // start from the middle of the window size & then shift it left by half the width of the world for position
+        // NOTE: these static casts are for stopping the implicit conversion warnings
+        int newX{(static_cast<int>(windowSize.x) / 2) - (static_cast<int>(mWorldSize.x) / 2)};
+        newPosition.x = static_cast<float>(newX) / windowSize.x;  // convert back to a float in range [0, 1]
+    } 
+    // Case 2: world ratio > window ratio -> we want black bars on top and bottom
+    else if (worldAspectRatio > windowAspectRatio) {
+
+    }
+
+
+    // 3. set our new viewports
+    sf::FloatRect newViewport{newPosition, newSize};
+    mWorldViewDefault.setViewport(newViewport);
+    mWorldViewZoomed.setViewport(newViewport);
 }
 
 // updateZoomView sets the center of mWorldViewZoomed such that the zoomed view would have the
@@ -118,7 +145,7 @@ void ZoomApp::render() {
         // If the user is not zooming in, use the default world view.
         mWindow.setView(mWorldViewDefault);
     } else {
-        // TODO: If the user is zooming in, use the zoomed world view.
+        // If the user is zooming in, use the zoomed world view.
         mWindow.setView(mWorldViewZoomed);
     }
     mWindow.draw(*mWaldoSprite);
