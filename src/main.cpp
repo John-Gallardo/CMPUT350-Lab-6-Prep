@@ -112,8 +112,13 @@ void ZoomApp::updateViewAfterResize() {
         newSize.x = static_cast<float>(mWorldSize.x) / windowSize.x;
     } 
     // Case 2: world ratio > window ratio -> we want black bars on top and bottom
-    else if (worldAspectRatio > windowAspectRatio) {
+    if (worldAspectRatio > windowAspectRatio) {
+        // for position, we shift y. start from middle of window size & then shift it up by half the height
+        int newY{(static_cast<int>(windowSize.y) / 2) - (static_cast<int>(mWorldSize.y) / 2)};
+        newPosition.y = static_cast<float>(newY) / windowSize.y;
 
+        // 'height' of size should be just world space height
+        newSize.y = static_cast<float>(mWorldSize.y) / windowSize.y;
     }
 
 
